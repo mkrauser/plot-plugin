@@ -8,6 +8,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.FormValidation;
 import java.io.IOException;
+import javax.servlet.ServletException;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
@@ -66,5 +67,13 @@ public class PlotDescriptor extends BuildStepDescriptor<Publisher> {
             return FormValidation.ok();
         }
         return FilePath.validateFileMask(project.getSomeWorkspace(), value);
+    }
+
+    public FormValidation doCheckTitle(@QueryParameter String value)
+            throws IOException, ServletException {
+        if (value == null || value.isEmpty()) {
+            return FormValidation.error("Please set a title");
+        }
+        return FormValidation.ok();
     }
 }

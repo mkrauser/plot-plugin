@@ -40,10 +40,9 @@ public class PlotBuilder extends Builder implements SimpleBuildStep {
     // Required fields
     private final String group;
     private final String style;
+    private final String title;
 
     // Optional fields
-    @CheckForNull
-    private String title;
     @CheckForNull
     private String numBuilds;
     @CheckForNull
@@ -73,8 +72,9 @@ public class PlotBuilder extends Builder implements SimpleBuildStep {
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     // Similarly, any optional @DataBoundSetter properties must match
     @DataBoundConstructor
-    public PlotBuilder(String group, String style, String csvFileName) {
+    public PlotBuilder(String group, String title, String style, String csvFileName) {
         this.group = group;
+        this.title = title;
         this.style = style;
         this.csvFileName = csvFileName;
     }
@@ -87,14 +87,8 @@ public class PlotBuilder extends Builder implements SimpleBuildStep {
         return style;
     }
 
-    @CheckForNull
     public String getTitle() {
         return title;
-    }
-
-    @DataBoundSetter
-    public final void setTitle(@CheckForNull String title) {
-        this.title = Util.fixEmptyAndTrim(title);
     }
 
     @CheckForNull
@@ -271,6 +265,14 @@ public class PlotBuilder extends Builder implements SimpleBuildStep {
             }
             if (value.length() < 4) {
                 return FormValidation.warning("Isn't the group too short?");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckTitle(@QueryParameter String value)
+                throws IOException, ServletException {
+            if (value == null || value.isEmpty()) {
+                return FormValidation.error("Please set a title");
             }
             return FormValidation.ok();
         }
