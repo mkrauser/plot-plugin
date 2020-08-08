@@ -5,14 +5,15 @@
  */
  -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/plot">
   <f:entry>
     <f:repeatable var="plot" items="${instance.plots}" name="plots" add="${%Add Plot}" minimum="1">
       <div align="left">
         <f:repeatableDeleteButton value="${%Delete Plot}"/>
       </div>
       <input name="csvFileName" type="hidden" value="${plot.csvFileName}" />
-      <table width="100%">
+      <p:blockWrapper>
         <f:entry title="${%Plot group}" help="/plugin/plot/help-group.html">
           <f:textbox name="group" value="${plot.group}" clazz="required" />
         </f:entry>
@@ -23,8 +24,7 @@
           <f:textbox name="description" value="${plot.description}" />
         </f:entry>
         <f:entry title="${%Number of builds to include}" help="/plugin/plot/help-numbuilds.html">
-          <input class="positive-number" type="text" name="numBuilds"
-                 style="width:20em" value="${plot.numBuilds}" />
+          <f:number clazz="positive-number" name="numBuilds" value="${plot.numBuilds}" />
         </f:entry>
         <f:entry title="${%Plot y-axis label}" help="/plugin/plot/help-yaxis.html">
           <f:textbox name="yaxis" value="${plot.yaxis}" />
@@ -64,7 +64,6 @@
 
         <f:entry title="" description="${%A new data series definition}">
           <f:repeatable var="series" items="${plot.series}" minimum="1">
-            <table width="100%" bgcolor="#EEEEEE">
               <f:entry title="${%Data series file}" help="/plugin/plot/help-series.html">
                 <f:textbox name="file" value="${series.file}"
                            checkUrl="'descriptorByName/hudson.plugins.plot.PlotPublisher/checkSeriesFile?value='+toValue(this)" />
@@ -80,34 +79,21 @@
               <f:radioBlock name="fileType" value="csv" title="${%Load data from csv file}" help="/plugin/plot/help-csv.html" checked="${series.fileType=='csv'}">
                 <f:nested>
                   <div>
-                    <table>
-                      <tr>
-                        <td></td>
-                        <th align="left">${%Include all columns}</th>
-                        <th align="left">${%Include columns by name}</th>
-                        <th align="left">${%Exclude columns by name}</th>
-                        <th align="left">${%Include columns by index}</th>
-                        <th align="left">${%Exclude columns by index}</th>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td>
-                          <f:radio name="inclusionFlag" value="OFF" checked="${series.inclusionFlag=='OFF' or series.inclusionFlag==null}" />
-                        </td>
-                        <td>
-                          <f:radio name="inclusionFlag" value="INCLUDE_BY_STRING" checked="${series.inclusionFlag=='INCLUDE_BY_STRING'}" />
-                        </td>
-                        <td>
-                          <f:radio name="inclusionFlag" value="EXCLUDE_BY_STRING" checked="${series.inclusionFlag=='EXCLUDE_BY_STRING'}" />
-                        </td>
-                        <td>
-                          <f:radio name="inclusionFlag" value="INCLUDE_BY_COLUMN" checked="${series.inclusionFlag=='INCLUDE_BY_COLUMN'}" />
-                        </td>
-                        <td>
-                          <f:radio name="inclusionFlag" value="EXCLUDE_BY_COLUMN" checked="${series.inclusionFlag=='EXCLUDE_BY_COLUMN'}" />
-                        </td>
-                      </tr>
-                    </table>
+                    <f:entry>
+                      <f:radio title="${%Include all columns}" name="inclusionFlag" value="OFF" checked="${series.inclusionFlag=='OFF' or series.inclusionFlag==null}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Include columns by name}" name="inclusionFlag" value="INCLUDE_BY_STRING" checked="${series.inclusionFlag=='INCLUDE_BY_STRING'}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Exclude columns by name}" name="inclusionFlag" value="EXCLUDE_BY_STRING" checked="${series.inclusionFlag=='EXCLUDE_BY_STRING'}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Include columns by index}" name="inclusionFlag" value="INCLUDE_BY_COLUMN" checked="${series.inclusionFlag=='INCLUDE_BY_COLUMN'}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Exclude columns by index}" name="inclusionFlag" value="EXCLUDE_BY_COLUMN" checked="${series.inclusionFlag=='EXCLUDE_BY_COLUMN'}" />
+                    </f:entry>
                   </div>
                   <f:entry title="${%CSV Exclusion values}" help="/plugin/plot/help-csv-exclusions.html">
                     <f:textbox name="exclusionValues" value="${series.exclusionValues}" />
@@ -127,34 +113,21 @@
               <f:radioBlock name="fileType" value="xml" title="${%Load data from xml file using xpath}" help="/plugin/plot/help-xml.html" checked="${series.fileType=='xml'}">
                 <f:nested title="XML nested">
                   <div>
-                    <table>
-                      <tr>
-                        <td align="center">${%XPath Result type:}</td>
-                        <th align="center">${%Nodeset}</th>
-                        <th align="center">${%Node}</th>
-                        <th align="center">${%String}</th>
-                        <th align="center">${%Boolean}</th>
-                        <th align="center">${%Number}</th>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td>
-                          <f:radio name="nodeType" value="NODESET" checked="${series.nodeType=='NODESET' or series.nodeType==null}" />
-                        </td>
-                        <td>
-                          <f:radio name="nodeType" value="NODE" checked="${series.nodeType=='NODE'}" />
-                        </td>
-                        <td>
-                          <f:radio name="nodeType" value="STRING" checked="${series.nodeType=='STRING'}" />
-                        </td>
-                        <td>
-                          <f:radio name="nodeType" value="BOOLEAN" checked="${series.nodeType=='BOOLEAN'}" />
-                        </td>
-                        <td>
-                          <f:radio name="nodeType" value="NUMBER" checked="${series.nodeType=='NUMBER'}" />
-                        </td>
-                      </tr>
-                    </table>
+                    <f:entry>
+                      <f:radio title="${%Nodeset}" name="nodeType" value="NODESET" checked="${series.nodeType=='NODESET' or series.nodeType==null}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Node}" name="nodeType" value="NODE" checked="${series.nodeType=='NODE'}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%String}" name="nodeType" value="STRING" checked="${series.nodeType=='STRING'}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Boolean}" name="nodeType" value="BOOLEAN" checked="${series.nodeType=='BOOLEAN'}" />
+                    </f:entry>
+                    <f:entry>
+                      <f:radio title="${%Number}" name="nodeType" value="NUMBER" checked="${series.nodeType=='NUMBER'}" />
+                    </f:entry>
                   </div>
                   <f:entry title="${%XPath Expression}" help="/plugin/plot/help-xml-xpath.html">
                     <f:textbox name="xpath" value="${series.xpath}" />
@@ -171,7 +144,6 @@
                   <f:repeatableDeleteButton value="${%Delete Data Series}"/>
                 </div>
               </f:entry>
-            </table>
           </f:repeatable>
         </f:entry>
 
@@ -180,7 +152,7 @@
             <hr/>
           </f:block>
         </f:entry>
-      </table>
+      </p:blockWrapper>
     </f:repeatable>
   </f:entry>
 </j:jelly>
