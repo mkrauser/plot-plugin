@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <div>
 	<p>
-		<table border="1">${it.table}</table>
+		<div border="1">${it.table}</div>
 	</p>
 </div>
 

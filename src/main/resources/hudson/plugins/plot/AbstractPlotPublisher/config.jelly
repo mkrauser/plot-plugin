@@ -64,6 +64,7 @@
 
         <f:entry title="" description="${%A new data series definition}">
           <f:repeatable var="series" items="${plot.series}" minimum="1">
+            <p:blockWrapper>
               <f:entry title="${%Data series file}" help="/plugin/plot/help-series.html">
                 <f:textbox name="file" value="${series.file}"
                            checkUrl="'descriptorByName/hudson.plugins.plot.PlotPublisher/checkSeriesFile?value='+toValue(this)" />
@@ -144,6 +145,7 @@
                   <f:repeatableDeleteButton value="${%Delete Data Series}"/>
                 </div>
               </f:entry>
+            </p:blockWrapper>
           </f:repeatable>
         </f:entry>
 

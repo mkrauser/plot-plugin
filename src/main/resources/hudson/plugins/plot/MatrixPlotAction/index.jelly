@@ -16,13 +16,13 @@
           <p>
             ${%This project contains groups of plots.}
           </p>
-          <table>
+          <div>
             <j:forEach var="group" items="${it.originalGroups}">
               <t:summary icon="graph.gif" href="${it.getUrlGroup(group)}/">
                 ${group}
               </t:summary>
             </j:forEach>
-          </table>
+          </div>
         </j:when>
         <j:otherwise>
           <p>
